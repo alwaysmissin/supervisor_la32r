@@ -1,9 +1,15 @@
 # supervisor-32： 32位监控程序（“龙芯杯”个人赛）
-为了方便编写程序, 并快速的在自己的平台上运行该程序, 对龙芯发布的监控程序进行了修改, 运行时候默认运行在QEMU中
-QEMU的串口参考了清华的监控程序, 并且修改后可以正常通过串口输出, 并将串口输出转发到localhost:6666.
-首先使用`make sim`启动QEMU, 然后直接使用`python3 term.py localhost:6666`连接, 即可看到控制台输出`MONITOR for Loongarch32 - initialized.`
-测试结束后使用脚本`kill.sh`快速杀死QEMU进程.
-自己编写的程序可以接在test.S后继续编写, 在QEMU中使用`G`指令运行即可
+为了方便编写程序, 并快速的在自己的平台上运行该程序, 对龙芯发布的监控程序进行了修改, 运行时候默认运行在 QEMU 中.
+
+QEMU 的串口参考了清华的监控程序, 并且修改后可以正常通过串口输出, 并将串口输出转发到 `localhost:6666`.
+
+首先使用 `make sim` 启动 QEMU, 然后直接使用 `python3 term.py localhost:6666` 连接, 即可看到控制台输出 `MONITOR for Loongarch32 - initialized.`
+
+测试结束后使用脚本 `kill.sh` 快速杀死 QEMU 进程.
+
+自己编写的程序可以接在 test.S 后继续编写, 在 QEMU 中使用 `G` 指令运行即可.
+
+QEMU的安装请参考 https://gitee.com/loongson-edu/la32r-QEMU 中的wiki
 # supervisor-la32r：LoongArch 32 Reduced 监控程序
 ## 介绍
 
