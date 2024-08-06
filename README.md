@@ -9,6 +9,8 @@ QEMU 的串口参考了清华的监控程序, 并且修改后可以正常通过�
 
 自己编写的程序可以接在 test.S 后继续编写, 在 QEMU 中使用 `G` 指令运行即可.
 
+若在FPGA环境中使用, 请在编译时候使用标记`ON_FPGA=y`, 如`make ON_FPGA=y`
+
 QEMU的安装请参考 https://gitee.com/loongson-edu/la32r-QEMU 中的wiki
 # supervisor-la32r：LoongArch 32 Reduced 监控程序
 ## 介绍
