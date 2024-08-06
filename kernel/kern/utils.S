@@ -20,6 +20,17 @@ WRITESERIAL:                            // 写串口：将a0的低八位写入�
     jirl        zero,ra,0x0
 #else                               // QEMU模拟器上的写串口操作
 #TODO
+    la.global t1, COM1
+.TESTW:
+    // COM_LSR(5), 0x20(THR is empty)
+    ld.b t0, t1, 5
+    andi t0, t0, 0x20
+    beq t0, zero, .TESTW
+
+    la.global t1, COM1
+    // COM_RBR(0)
+    st.b a0, t1, 0
+    jr ra
 #endif
 
 READSERIAL:                             // 读串口：将读到的数据写入a0低八位
@@ -35,7 +46,25 @@ READSERIAL:                             // 读串口：将读到的数据写入a
     ld.b        a0,t1,0x0               // 读出
     jirl        zero,ra,0x0
 #else //ifdef MACH_FPGA             // QEMU模拟器上的读串口操作
-#TODO
+    la.global t1, COM1
+.TESTR:
+    // COM_LSR(5), 0x01(Data available)
+    ld.b t0, t1, 5
+    andi t0, t0, 0x1
+    bne t0, zero, .RSERIAL
+
+#ifdef ENABLE_INT
+    // 串口上还没有数据，调用 wait 系统调用
+    li.w a7, SYS_wait
+    syscall 0
+#endif
+    b .TESTR
+
+.RSERIAL:
+    la.global t1, COM1
+    // COM_RBR
+    ld.b a0, t1, 0
+    jr ra
 #endif //ifdef MACH_FPGA
 
 READSERIALWORD:

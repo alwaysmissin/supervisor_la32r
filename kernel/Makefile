@@ -5,6 +5,7 @@ GCCPREFIX	?=
 else
 GCCPREFIX	?= loongarch32r-linux-gnusf-
 endif
+QEMU := qemu-system-loongarch32
 LD	:= $(GCCPREFIX)ld
 CC	:= $(GCCPREFIX)gcc
 OBJDIR	:= obj
@@ -16,7 +17,8 @@ OBJ	:= $(patsubst $(SRCDIR)/%.S, $(OBJDIR)/%.o, $(SRC))
 TARGET	:= kernel.elf
 ASFLAG	:= -nostdinc -nostdlib -fno-builtin -mabi=ilp32s -g
 
-override ON_FPGA ?= y
+# 默认运行在QEMU中
+override ON_FPGA ?= n
 ifeq ($(ON_FPGA), y)
 	MACH_DEF = -DMACH_FPGA
 else
@@ -49,6 +51,12 @@ kernel.bin: $(TARGET)
 
 show-utest: $(TARGET)
 	@$(GCCPREFIX)objdump -D $< | grep "^[0-9a-f]\{8\} <UTEST_" | grep -n --color=auto 'UTEST_'
+
+sim: $(TARGET)
+	$(QEMU) -M ls3a5k32 -m 8M -kernel $< -nographic -monitor none -serial tcp::6666,server -s
+
+debug: $(TARGET)
+	$(QEMU) -M ls3a5k32 -m 8M -kernel $< -nographic -monitor none -serial tcp::6666,server -S -s
 
 clean:
 	-$(RM) -r $(OBJDIR)
