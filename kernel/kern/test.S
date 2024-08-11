@@ -175,16 +175,25 @@ crn_end:
     /* End of test */
 
 UTEST_CODE:
-    addi.w      t0,zero,0x1   # t0 = 1
-    addi.w      t1,zero,0x1   # t1 = 1
-    lu12i.w     a0,-0x7fc00    # a0 = 0x80400000
-    addi.w      a1,a0,0x20    # a1 = 0x80400020
+    li.w        a0, 0x31112
+    li.w        a1, 1
+    li.w        a2, 32
+    li.w        a3, 0   // result
 loop:
-    add.w       t2,t0,t1     # t2 = t0+t1
-    addi.w      t0,t1,0x0     # t0 = t1
-    addi.w      t1,t2,0x0     # t1 = t2
-    st.w        t2,a0,0x0
-    addi.w      a0,a0,0x4     # a0 += 4
-    bne         a0,a1,loop
+    andi      a4, a4, 0
+    move        a6, a1
+calc:
+    andi      a5, a6, 0x1
+    beq         a5, zero, calc_next
+    addi.w      a3, a3, 0x1
+calc_next:
+    srli.w      a6, a6, 1
+    addi.w      a4, a4, 1
+    bne         a2, a4, calc
+    addi.w      a1, a1, 1
+    bne         a1, a0, loop
+    li.w        a6, 0x80400000
+    st.w        a3, a6, 0
+    
 code_end:
     jirl        zero,ra,0x0
